@@ -41,6 +41,28 @@ namespace Jason.common
         {
             return CustomCacheDictionary.ContainsKey(key);
         }
+        /// <summary>
+        /// Use delegation to fina an item, if not exist, then add a new one.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static T FindOrAdd<T> (string key, Func<T> func)
+        {
+            T t = default(T);
+            if (!Exist(key))
+            {
+                t = func.Invoke();
+                CustomCache.Add(key, t);
+            }
+            else
+            {
+                t = Get<T>(key);
+            }
+
+            return t;
+        }
 
     }
 }
