@@ -64,5 +64,23 @@ namespace Jason.common
             return t;
         }
 
+        public static void RemoveAll()
+        {
+            CustomCacheDictionary.Clear();
+        }
+
+        public static void RemoveCondition(Func<string, bool> func)
+        {
+            List<string> list = new List<string>();
+            foreach (var key in CustomCacheDictionary.Keys)
+            {
+                if (func.Invoke(key))
+                {
+                    list.Add(key);
+                }                
+            }
+            list.ForEach(key => CustomCacheDictionary.Remove(key));
+        }
+
     }
 }
