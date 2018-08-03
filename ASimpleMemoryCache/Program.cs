@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ASimpleMemoryCache
@@ -71,6 +72,50 @@ namespace ASimpleMemoryCache
                     // which are relavent to the menu
                     string key = "_System_Menu";
                     CustomCache.RemoveCondition(s => s.Contains("_Menu_"));
+                }
+
+                {
+                    //Add a time attribute to the cache data.
+                    //Veryfy the validaty of cached data in an active and passive manner.
+                    string key = "_System_Menu";
+                    if (CustomCache.Exist(key))
+                    {
+                        string result = CustomCache.Get<string>(key);
+
+                    }
+                    else
+                    {
+                        string result = "New item";
+                        CustomCache.Add(key, result, 10);
+                    }
+                    
+                    //As long as the data source has changed or not during the validity period, the cache will prevail
+                    if (CustomCache.Exist(key))
+                    {
+                        string result = CustomCache.Get<string>(key);
+
+                    }
+                    else
+                    {
+                        string result = "New item";
+                        CustomCache.Add(key, result, 5);
+                    }
+
+                    Thread.Sleep(5000);
+                    //As long as the data is expired, regardless of whether the data source has changed or not, reacquire it
+                    if (CustomCache.Exist(key))
+                    {
+                        string result = CustomCache.Get<string>(key);
+
+                    }
+                    else
+                    {
+                        string result = "New item";
+                        CustomCache.Add(key, result, 5);
+                    }
+
+
+
                 }
 
 
