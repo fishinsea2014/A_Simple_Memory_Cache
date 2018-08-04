@@ -20,10 +20,11 @@ namespace Jason.common
             Console.WriteLine($"{DateTime.Now.ToString("MM-dd HH:mm:ss fff")} initiate the cache"); //Record when the system restart
 
             //Actively clean up expired items
+        Task.Run(() =>
+                        {
             while (true)
             {
-                Task.Run(() =>
-                {
+                
                     List<string> list = new List<string>();
                     foreach (var key in CustomCacheDictionary.Keys)
                     {
@@ -41,10 +42,10 @@ namespace Jason.common
                     KeyValuePair<object, DateTime> removedPair ;
                     list.ForEach(key => CustomCacheDictionary.TryRemove(key, out removedPair));
 
-                });
+                }
                 Thread.Sleep(1000 * 60 * 60); // Do the cleaning every 10 minutes
-            }
-         }
+            });
+        }
 
         
 
