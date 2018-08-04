@@ -79,16 +79,16 @@ namespace ASimpleMemoryCache
                     //Veryfy the validaty of cached data in an active and passive manner.
                     Console.WriteLine("===Set period of out of date of an item===");
                     string key = "_System_Menu";
-                    if (CustomCache.Exist(key))
-                    {
-                        string result = CustomCache.Get<string>(key);
+                    //if (CustomCache.Exist(key))
+                    //{
+                    //    string result = CustomCache.Get<string>(key);
 
-                    }
-                    else
-                    {
-                        string result = "New item";
-                        CustomCache.Add(key, result, 10);
-                    }
+                    //}
+                    //else
+                    //{
+                    //    string result = "New item";
+                    //    CustomCache.Add(key, result, 10);
+                    //}
                     
                     //As long as the data source has changed or not during the validity period, the cache will prevail
                     if (CustomCache.Exist(key))

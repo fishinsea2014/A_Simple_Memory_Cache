@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,11 +10,13 @@ namespace Jason.common
 {
     public class CustomCache
     {
-        private static Dictionary<string, KeyValuePair<object, DateTime>> CustomCacheDictionary;// Static ensure global unique and donot release.
+        //private static Dictionary<string, KeyValuePair<object, DateTime>> CustomCacheDictionary;// Static ensure global unique and donot release.
+        private static ConcurrentDictionary<string, KeyValuePair<object, DateTime>> CustomCacheDictionary;
 
         static CustomCache()
         {
-            CustomCacheDictionary = new Dictionary<string, KeyValuePair<object, DateTime>>();
+            //CustomCacheDictionary = new Dictionary<string, KeyValuePair<object, DateTime>>();
+            CustomCacheDictionary = new ConcurrentDictionary<string, KeyValuePair<object, DateTime>>();
             Console.WriteLine($"{DateTime.Now.ToString("MM-dd HH:mm:ss fff")} initiate the cache"); //Record when the system restart
 
             //Actively clean up expired items
@@ -34,7 +37,10 @@ namespace Jason.common
                             list.Add(key);
                         }
                     }
-                    list.ForEach(key => CustomCacheDictionary.Remove(key));
+                    //list.ForEach(key => CustomCacheDictionary.Remove(key));
+                    KeyValuePair<object, DateTime> removedPair ;
+                    list.ForEach(key => CustomCacheDictionary.TryRemove(key, out removedPair));
+
                 });
                 Thread.Sleep(1000 * 60 * 60); // Do the cleaning every 10 minutes
             }
@@ -44,7 +50,9 @@ namespace Jason.common
 
         public static void Add (string key, object value, int second = 1800)
         {
-            CustomCacheDictionary.Add(key,new KeyValuePair<object,DateTime>(value, DateTime.Now.AddSeconds(second)));
+            KeyValuePair<object, DateTime> addedPair;
+
+            CustomCacheDictionary.TryAdd(key,new KeyValuePair<object,DateTime>(value, DateTime.Now.AddSeconds(second)));
 
             
         }
@@ -76,7 +84,9 @@ namespace Jason.common
                 }
                 else
                 {
-                    CustomCacheDictionary.Remove(key); //If the item is out of date, remove it.
+                    //CustomCacheDictionary.Remove(key); //If the item is out of date, remove it.
+                    KeyValuePair<object, DateTime> removedPair;
+                    CustomCacheDictionary.TryRemove(key, out removedPair);
                     return false;
                 }
             }
@@ -88,7 +98,9 @@ namespace Jason.common
 
         public static void Remove(string key)
         {
-            CustomCacheDictionary.Remove(key);
+            //CustomCacheDictionary.Remove(key);
+            KeyValuePair<object, DateTime> removedPair;
+            CustomCacheDictionary.TryRemove(key, out removedPair);
         }
         /// <summary>
         /// Use delegation to fina an item, if not exist, then add a new one.
@@ -128,7 +140,9 @@ namespace Jason.common
                     list.Add(key);
                 }                
             }
-            list.ForEach(key => CustomCacheDictionary.Remove(key));
+            //list.ForEach(key => CustomCacheDictionary.Remove(key));
+            KeyValuePair<object, DateTime> removedPair;
+            list.ForEach(key => CustomCacheDictionary.TryRemove(key, out removedPair));
         }
 
     }
