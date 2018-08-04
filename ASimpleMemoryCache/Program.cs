@@ -70,13 +70,14 @@ namespace ASimpleMemoryCache
                 {
                     //2. When a menu is changed, should not go through the whole cache or delete all , just delete the items
                     // which are relavent to the menu
-                    string key = "_System_Menu";
-                    CustomCache.RemoveCondition(s => s.Contains("_Menu_"));
+                    //string key = "_System_Menu";
+                    //CustomCache.RemoveCondition(s => s.Contains("_Menu_"));
                 }
 
                 {
                     //Add a time attribute to the cache data.
                     //Veryfy the validaty of cached data in an active and passive manner.
+                    Console.WriteLine("===Set period of out of date of an item===");
                     string key = "_System_Menu";
                     if (CustomCache.Exist(key))
                     {
